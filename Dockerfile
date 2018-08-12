@@ -13,13 +13,11 @@ RUN mkdir /app \
     && cp apollo-configservice/target/apollo-configservice-${version}.jar /app/configservice.jar \
     && cp apollo-adminservice/target/apollo-adminservice-${version}.jar /app/adminservice.jar \
     && cp apollo-portal/target/apollo-portal-${version}.jar /app/portal.jar
-RUN apk add -U tzdata \
-    && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 
 FROM java:8-jre-alpine
+ENV TZ Asia/Shanghai
 WORKDIR /app
 COPY --from=build /app .
-COPY --from=build /etc/localtime /etc/localtime
 EXPOSE 8070
 EXPOSE 8080
 EXPOSE 8090
