@@ -1,0 +1,44 @@
+version: '3.4'
+services:
+  configservice:
+    image: szss/apollo
+    environment:
+    - spring_datasource_url=jdbc:mysql://192.168.0.102:3306/ApolloConfigDB?characterEncoding=utf8
+    - spring_datasource_username=root
+    - spring_datasource_password=123456
+    - logging.file=/opt/logs/configservice.log
+    - server.port=8080
+    volumes:
+    - ./logs:/opt/logs
+    command: configservice.jar
+    restart: always
+
+  adminservice:
+    image: szss/apollo
+    environment:
+    - spring_datasource_url=jdbc:mysql://192.168.0.102:3306/ApolloConfigDB?characterEncoding=utf8
+    - spring_datasource_username=root
+    - spring_datasource_password=123456
+    - logging.file=/opt/logs/adminservice.log
+    - server.port=8090
+    volumes:
+    - ./logs:/opt/logs
+    command: adminservice.jar
+    depends_on:
+    - configservice
+    restart: always
+
+  portal:
+    image: szss/apollo
+    environment:
+    - spring_datasource_url=jdbc:mysql://192.168.0.102:3306/ApolloPortalDB?characterEncoding=utf8
+    - spring_datasource_username=root
+    - spring_datasource_password=123456
+    - server.port=8070
+    - logging.file=/opt/logs/portal.log
+    volumes:
+    - ./logs:/opt/logs
+    command: -Ddev_meta=http://192.168.0.102:8080 portal.jar
+    depends_on:
+    - adminservice
+    restart: always
