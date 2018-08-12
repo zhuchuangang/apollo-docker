@@ -1,8 +1,7 @@
-FROM maven:3.5-jdk-8-alpine AS build
+FROM registry.cn-hangzhou.aliyuncs.com/acs/maven:3-jdk-8 AS build
 LABEL Author="zhuchuangang <zhuchuangang20@qq.com>"
 ARG version=1.0.0
 ARG package_name=apollo-${version}.tar.gz
-COPY settings.xml /root/.m2
 COPY build.sh /scripts/
 WORKDIR /src
 RUN wget -c https://github.com/ctripcorp/apollo/archive/v${version}.tar.gz -O ${package_name} \
