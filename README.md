@@ -30,3 +30,29 @@ docker-compose up -d
 访问potal页面：http://127.0.0.1:8070
 
 默认用户超级管理员：apollo/admin
+
+
+# 5 测试配置
+```
+test = 100
+spring.datasource.type = com.alibaba.druid.pool.DruidDataSource
+spring.datasource.url = jdbc:mysql://127.0.0.1:3306/test
+spring.datasource.username = root
+spring.datasource.password = 123456
+spring.datasource.driver-class-name = com.mysql.jdbc.Driver
+spring.datasource.druid.validationQuery = SELECT 1
+spring.datasource.druid.initialSize = 10
+spring.datasource.druid.minIdle = 10
+spring.datasource.druid.maxActive = 200
+spring.datasource.druid.minEvictableIdleTimeMillis = 180000
+spring.datasource.druid.testOnBorrow = false
+spring.datasource.druid.testWhileIdle = true
+spring.datasource.druid.removeAbandoned = true
+spring.datasource.druid.removeAbandonedTimeout = 1800
+spring.datasource.druid.logAbandoned = true
+spring.datasource.druid.poolPreparedStatements = true
+spring.datasource.druid.maxOpenPreparedStatements = 100
+```
+
+# 6 数据库、redis、mongo配置刷新参考
+https://github.com/cartersz/connection
