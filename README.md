@@ -56,3 +56,6 @@ spring.datasource.druid.maxOpenPreparedStatements = 100
 
 # 6 数据库、redis、mongo配置刷新参考
 https://github.com/cartersz/connection
+
+# 7 profiles
+通过spring.profiles.active开启不同配置，目前有2个配置apollo和local，local使用本地配置，同时在启动vm参数需要配置-Denv=local

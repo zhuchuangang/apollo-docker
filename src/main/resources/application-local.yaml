@@ -1,0 +1,22 @@
+test: 100
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/test
+    username: root
+    password: 123456
+    druid:
+      logAbandoned: true
+      minIdle: 10
+      testWhileIdle: true
+      testOnBorrow: false
+      validationQuery: SELECT 1
+      maxOpenPreparedStatements: 100
+      removeAbandoned: true
+      minEvictableIdleTimeMillis: 180000
+      initialSize: 10
+      removeAbandonedTimeout: 1800
+      poolPreparedStatements: true
+      maxActive: 200

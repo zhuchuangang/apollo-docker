@@ -1,16 +1,20 @@
 server:
   port: 8888
 
-
-app:
-  id: 6666
-
-apollo:
-  meta: http://127.0.0.1:8080
-
 spring:
   application:
     name: apollo-client-demo
+  profiles:
+    active: local
+  cloud:
+    config:
+      enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 # mybatis配置
 mybatis-plus:
