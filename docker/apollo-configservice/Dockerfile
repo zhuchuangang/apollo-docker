@@ -1,4 +1,4 @@
-FROM registry.cn-hangzhou.aliyuncs.com/acs/maven:3-jdk-8 AS build
+FROM maven:3.5.4-jdk-8-alpine AS build
 LABEL Author="zhuchuangang <zhuchuangang20@qq.com>"
 #设置版本号
 ARG version=1.0.0

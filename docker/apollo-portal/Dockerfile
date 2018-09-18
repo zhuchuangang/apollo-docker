@@ -1,4 +1,4 @@
-FROM maven:3.5.4-jdk-8-alpine
+FROM maven:3.5.4-jdk-8-alpine AS build
 LABEL Author="zhuchuangang <zhuchuangang20@qq.com>"
 #设置版本号
 ARG version=1.0.0
@@ -23,7 +23,7 @@ RUN mkdir /apollo-portal \
     && unzip -d /apollo-portal /apollo-${version}/apollo-portal/target/apollo-portal-${version}-github.zip
 RUN  cp /apollo-portal/apollo-portal-${version}.jar /apollo-portal/apollo-portal.jar
 
-#FROM java:8-jre-alpine
+FROM java:8-jre-alpine
 #设置时区
 ENV TZ Asia/Shanghai
 #设置服务名称
@@ -41,9 +41,9 @@ ENV UAT_META="http://service-apollo-configservice:8080"
 ENV LPT_META="http://service-apollo-configservice:8080"
 ENV PRO_META="http://service-apollo-configservice:8080"
 #创建/apollo-configservice目录
-#RUN mkdir /apollo-portal
+RUN mkdir /apollo-portal
 #将编译完成的内容复制到/apollo-portal目录下
-#COPY --from=build /apollo-portal /apollo-portal
+COPY --from=build /apollo-portal /apollo-portal
 #添加修改配置文件的脚本
 COPY scripts/entrypoint.sh /apollo-portal/scripts/entrypoint.sh
 #添加运行脚本

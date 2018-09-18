@@ -21,7 +21,6 @@ export JAVA_OPTS="$JAVA_OPTS -Ddev_meta=$DEV_META -Dfat_meta=$FAT_META -Duat_met
 
 printf "$(date) ==== Starting ==== \n"
 
-
 java ${JAVA_OPTS} -jar /apollo-portal/${SERVICE_NAME}.jar
 
 rc=$?;
