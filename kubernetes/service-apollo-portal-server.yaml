@@ -38,8 +38,8 @@ metadata:
   name: configmap-apollo-portal-server
 data:
   SPRING_DATASOURCE_URL: "jdbc:mysql://service-mysql-for-portal-server.apollo:3306/ApolloPortalDB?characterEncoding=utf8"
-  SPRING_DATASOURCE_USERNAME: root
-  SPRING_DATASOURCE_PASSWORD: 123456
+  SPRING_DATASOURCE_USERNAME: "root"
+  SPRING_DATASOURCE_PASSWORD: "123456"
   PRO_META: "http://service-apollo-configservice-prod.apollo:8080"
 
 ---

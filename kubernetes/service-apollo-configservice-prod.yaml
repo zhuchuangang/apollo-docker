@@ -1,4 +1,3 @@
-
 ---
 # configmap for apollo-config-server-prod
 kind: ConfigMap
@@ -8,9 +7,8 @@ metadata:
   name: configmap-apollo-configservice-prod
 data:
   SPRING_DATASOURCE_URL: "jdbc:mysql://service-mysql-for-apollo-prod.apollo:3306/ApolloConfigDB?characterEncoding=utf8"
-  SPRING_DATASOURCE_USERNAME: root
-  SPRING_DATASOURCE_PASSWORD: 123456
-
+  SPRING_DATASOURCE_USERNAME: "root"
+  SPRING_DATASOURCE_PASSWORD: "123456"
 ---
 kind: Service
 apiVersion: v1
@@ -21,9 +19,9 @@ metadata:
     app: service-apollo-meta-server-prod
 spec:
   ports:
-    - protocol: TCP
-      port: 8080
-      targetPort: 8080
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
   selector:
     app: pod-apollo-configservice-prod
   type: ClusterIP
@@ -40,10 +38,10 @@ metadata:
     app: service-apollo-configservice-prod
 spec:
   ports:
-    - protocol: TCP
-      port: 8080
-      targetPort: 8080
-      nodePort: 30005
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+    nodePort: 30005
   selector:
     app: pod-apollo-configservice-prod
   type: NodePort
@@ -74,40 +72,40 @@ spec:
         node: "apollo"
 
       containers:
-        - image: registry.cn-hangzhou.aliyuncs.com/szss/apollo-configservice:v1.0.0
-          securityContext:
-            privileged: true
-          imagePullPolicy: IfNotPresent
-          name: container-apollo-configservice-prod
-          ports:
-            - protocol: TCP
-              containerPort: 8080
-          # 挂载configmap-apollo-configservice-prod相关配置
-          envFrom:
-          - configMapRef:
-              name: configmap-apollo-configservice-prod
-          # 计算资源分配
-          resources:
-            # 初始请求资源
-            requests:
-              cpu: 0.5
-              memory: 1024Mi
-            # 资源限制
-            limits:
-              cpu: 1
-              memory: 3072Mi
-          
-          readinessProbe:
-            tcpSocket:
-              port: 8080
-            initialDelaySeconds: 10
-            periodSeconds: 5
-          
-          livenessProbe:
-            tcpSocket:
-              port: 8080
-            initialDelaySeconds: 120
-            periodSeconds: 10
-          
+      - image: registry.cn-hangzhou.aliyuncs.com/szss/apollo-configservice:v1.0.0
+        securityContext:
+          privileged: true
+        imagePullPolicy: IfNotPresent
+        name: container-apollo-configservice-prod
+        ports:
+        - protocol: TCP
+          containerPort: 8080
+        # 挂载configmap-apollo-configservice-prod相关配置
+        envFrom:
+        - configMapRef:
+            name: configmap-apollo-configservice-prod
+        # 计算资源分配
+        resources:
+          # 初始请求资源
+          requests:
+            cpu: 0.5
+            memory: 1024Mi
+          # 资源限制
+          limits:
+            cpu: 1
+            memory: 3072Mi
+
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 120
+          periodSeconds: 10
+
       dnsPolicy: ClusterFirst
       restartPolicy: Always
