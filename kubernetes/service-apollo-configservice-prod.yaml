@@ -1,0 +1,113 @@
+
+---
+# configmap for apollo-config-server-prod
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  namespace: apollo
+  name: configmap-apollo-configservice-prod
+data:
+  SPRING_DATASOURCE_URL: "jdbc:mysql://service-mysql-for-apollo-prod.apollo:3306/ApolloConfigDB?characterEncoding=utf8"
+  SPRING_DATASOURCE_USERNAME: root
+  SPRING_DATASOURCE_PASSWORD: 123456
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: apollo
+  name: service-apollo-meta-server-prod
+  labels:
+    app: service-apollo-meta-server-prod
+spec:
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: pod-apollo-configservice-prod
+  type: ClusterIP
+  clusterIP: None
+  sessionAffinity: ClientIP
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: apollo
+  name: service-apollo-configservice-prod
+  labels:
+    app: service-apollo-configservice-prod
+spec:
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30005
+  selector:
+    app: pod-apollo-configservice-prod
+  type: NodePort
+  sessionAffinity: ClientIP
+
+---
+kind: StatefulSet
+apiVersion: apps/v1beta2
+metadata:
+  namespace: apollo
+  name: statefulset-apollo-configservice-prod
+  labels:
+    app: statefulset-apollo-configservice-prod
+spec:
+  serviceName: service-apollo-meta-server-prod
+  replicas: 3
+  selector:
+    matchLabels:
+      app: pod-apollo-configservice-prod
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: pod-apollo-configservice-prod
+    spec:
+      nodeSelector:
+        node: "apollo"
+
+      containers:
+        - image: registry.cn-hangzhou.aliyuncs.com/szss/apollo-configservice:v1.0.0
+          securityContext:
+            privileged: true
+          imagePullPolicy: IfNotPresent
+          name: container-apollo-configservice-prod
+          ports:
+            - protocol: TCP
+              containerPort: 8080
+          # 挂载configmap-apollo-configservice-prod相关配置
+          envFrom:
+          - configMapRef:
+              name: configmap-apollo-configservice-prod
+          # 计算资源分配
+          resources:
+            # 初始请求资源
+            requests:
+              cpu: 0.5
+              memory: 1024Mi
+            # 资源限制
+            limits:
+              cpu: 1
+              memory: 3072Mi
+          
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 120
+            periodSeconds: 10
+          
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always

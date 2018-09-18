@@ -2,7 +2,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-#  namespace: apollo
+  namespace: apollo
   name: service-mysql-for-apollo-prod
   labels:
     app: service-mysql-for-apollo-prod
@@ -18,11 +18,11 @@ spec:
 kind: Endpoints
 apiVersion: v1
 metadata:
-#  namespace: apollo
+  namespace: apollo
   name: service-mysql-for-apollo-prod
 subsets:
   - addresses:
-      - ip: your-mysql-addresses
+      - ip: 10.10.1.120
     ports:
       - protocol: TCP
         port: 3306

@@ -1,0 +1,99 @@
+---
+# configmap for apollo-admin-server-prod
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  namespace: apollo
+  name: configmap-apollo-adminservice-prod
+data:
+  SPRING_DATASOURCE_URL: "jdbc:mysql://service-mysql-for-apollo-prod.apollo:3306/ApolloConfigDB?characterEncoding=utf8"
+  SPRING_DATASOURCE_USERNAME: root
+  SPRING_DATASOURCE_PASSWORD: 123456
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: apollo
+  name: service-apollo-adminservice-prod
+  labels:
+    app: service-apollo-adminservice-prod
+spec:
+  ports:
+  - protocol: TCP
+    port: 8090
+    targetPort: 8090
+  selector:
+    app: pod-apollo-adminservice-prod
+  type: ClusterIP
+  sessionAffinity: ClientIP
+
+---
+kind: Deployment
+apiVersion: apps/v1beta2
+metadata:
+  namespace: apollo
+  name: deployment-apollo-adminservice-prod
+  labels:
+    app: deployment-apollo-adminservice-prod
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: pod-apollo-adminservice-prod
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: pod-apollo-adminservice-prod
+    spec:
+      nodeSelector:
+        node: "apollo"
+
+      initContainers:
+      - image: alpine-bash:3.8
+        name: check-service-apollo-configservice-prod
+        command: ['bash', '-c', "curl --connect-timeout 2 --max-time 5 --retry 50 --retry-delay 1 --retry-max-time 120 service-apollo-adminservice-prod.apollo:8080"]
+
+      containers:
+      - image: registry.cn-hangzhou.aliyuncs.com/szss/apollo-adminservice:v1.0.0
+        securityContext:
+          privileged: true
+        imagePullPolicy: IfNotPresent
+        name: container-apollo-adminservice-prod
+        ports:
+        - protocol: TCP
+          containerPort: 8090
+
+        # 挂载configmap-apollo-adminservice-prod相关配置
+        envFrom:
+        - configMapRef:
+            name: configmap-apollo-adminservice-prod
+        # 计算资源分配
+        resources:
+          # 初始请求资源
+          requests:
+            cpu: 0.5
+            memory: 1024Mi
+          # 资源限制
+          limits:
+            cpu: 1
+            memory: 3072Mi
+
+        readinessProbe:
+          tcpSocket:
+            port: 8090
+          initialDelaySeconds: 10
+          periodSeconds: 5
+
+        livenessProbe:
+          tcpSocket:
+            port: 8090
+          initialDelaySeconds: 120
+          periodSeconds: 10
+
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
