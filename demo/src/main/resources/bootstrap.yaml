@@ -5,7 +5,7 @@ spring:
   application:
     name: apollo-client-demo
   profiles:
-    active: local
+    active: apollo
   cloud:
     config:
       enabled: false

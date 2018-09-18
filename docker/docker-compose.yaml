@@ -1,0 +1,45 @@
+version: '3.4'
+services:
+  configservice:
+    image: szss/apollo-configservice:latest
+    ports:
+    - "8080:8080"
+    environment:
+    - SPRING_DATASOURCE_URL=jdbc:mysql://10.10.1.120:3306/ApolloConfigDB?characterEncoding=utf8
+    - SPRING_DATASOURCE_USERNAME=root
+    - SPRING_DATASOURCE_PASSWORD=123456
+    - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://10.10.1.120:8080/eureka/
+    volumes:
+    - ./logs/apollo-configservice:/opt/logs/apollo-configservice
+    restart: always
+
+  adminservice:
+    image: szss/apollo-adminservice:latest
+    ports:
+    - "8090:8090"
+    environment:
+    - SPRING_DATASOURCE_URL=jdbc:mysql://10.10.1.120:3306/ApolloConfigDB?characterEncoding=utf8
+    - SPRING_DATASOURCE_USERNAME=root
+    - SPRING_DATASOURCE_PASSWORD=123456
+    - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://10.10.1.120:8080/eureka/
+    volumes:
+    - ./logs/apollo-adminservice:/opt/logs/apollo-adminservice
+    depends_on:
+    - configservice
+    restart: always
+
+  portal:
+    image: szss/apollo-portal:latest
+    ports:
+    - "8070:8070"
+    environment:
+    - SPRING_DATASOURCE_URL=jdbc:mysql://10.10.1.120:3306/ApolloPortalDB?characterEncoding=utf8
+    - SPRING_DATASOURCE_USERNAME=root
+    - SPRING_DATASOURCE_PASSWORD=123456
+    - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://10.10.1.120:8080/eureka/
+    - DEV_META=http://configservice:8080
+    volumes:
+    - ./logs/apollo-portal:/opt/logs/apollo-portal
+    depends_on:
+    - adminservice
+    restart: always

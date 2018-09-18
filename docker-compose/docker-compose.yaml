@@ -5,25 +5,28 @@ services:
     ports:
       - "8080:8080"
     environment:
-    - spring_datasource_url=jdbc:mysql://$host_ip:3306/ApolloConfigDB?characterEncoding=utf8
+    - spring_datasource_url=jdbc:mysql://10.10.1.120:3306/ApolloConfigDB?characterEncoding=utf8
     - spring_datasource_username=root
     - spring_datasource_password=123456
     - logging.file=/opt/logs/configservice.log
+    - eureka_client_service_url_defaultZone=http://10.10.1.120:8080/eureka/
     - server.port=8080
     volumes:
     - ./logs:/opt/logs
     command: configservice.jar
     restart: always
+    network_mode: host
 
   adminservice:
     image: registry.cn-hangzhou.aliyuncs.com/szss/apollo:1.0.0
     ports:
     - "8090:8090"
     environment:
-    - spring_datasource_url=jdbc:mysql://$host_ip:3306/ApolloConfigDB?characterEncoding=utf8
+    - spring_datasource_url=jdbc:mysql://10.10.1.120:3306/ApolloConfigDB?characterEncoding=utf8
     - spring_datasource_username=root
     - spring_datasource_password=123456
     - logging.file=/opt/logs/adminservice.log
+    - eureka_client_service_url_defaultZone=http://10.10.1.120:8080/eureka/
     - server.port=8090
     volumes:
     - ./logs:/opt/logs
@@ -31,21 +34,24 @@ services:
     depends_on:
     - configservice
     restart: always
+    network_mode: host
 
   portal:
     image: registry.cn-hangzhou.aliyuncs.com/szss/apollo:1.0.0
     ports:
     - "8070:8070"
     environment:
-    - spring_datasource_url=jdbc:mysql://$host_ip:3306/ApolloPortalDB?characterEncoding=utf8
+    - spring_datasource_url=jdbc:mysql://10.10.1.120:3306/ApolloPortalDB?characterEncoding=utf8
     - spring_datasource_username=root
     - spring_datasource_password=123456
+    - eureka_client_service_url_defaultZone=http://10.10.1.120:8080/eureka/
     - server.port=8070
     - logging.file=/opt/logs/portal.log
     volumes:
     - ./logs:/opt/logs
     #command: -Ddev_meta=http://$host_ip:8080 -Dfat_meta=http://$host_ip:8080 -Duat_meta=http://$host_ip:8080 -Dpro_meta=http://$host_ip:8080 portal.jar
-    command: -Ddev_meta=http://$host_ip:8080 portal.jar
+    command: -Ddev_meta=http://10.10.1.120:8080 portal.jar
     depends_on:
     - adminservice
     restart: always
+    network_mode: host
