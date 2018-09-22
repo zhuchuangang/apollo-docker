@@ -45,6 +45,9 @@ http://statefulset-apollo-configservice-prod-0.service-apollo-meta-server-prod.a
 ```
 statefulset-apollo-configservice-prod-0.service-apollo-meta-server-prod.apollo为pod的DNS地址。
 
+修改ApolloPortalDB库的ServerConfig表中的apollo.portal.envs配置环境，如生产环境设置为：pro
+
+
 # 6 创建mysql外网映射服务
 ```bash
 kubectl create -f ./service-mysql-for-apollo-prod.yaml

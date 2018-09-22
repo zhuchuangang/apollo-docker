@@ -54,7 +54,7 @@ spec:
         node: "apollo"
 
       initContainers:
-      - image: alpine-bash:3.8
+      - image: centos:7
         name: check-service-apollo-configservice-prod
         command: ['bash', '-c', "curl --connect-timeout 2 --max-time 5 --retry 50 --retry-delay 1 --retry-max-time 120 service-apollo-adminservice-prod.apollo:8080"]
 

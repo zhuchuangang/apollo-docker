@@ -40,7 +40,7 @@ data:
   SPRING_DATASOURCE_URL: "jdbc:mysql://service-mysql-for-portal-server.apollo:3306/ApolloPortalDB?characterEncoding=utf8"
   SPRING_DATASOURCE_USERNAME: "root"
   SPRING_DATASOURCE_PASSWORD: "123456"
-  PRO_META: "http://service-apollo-configservice-prod.apollo:8080"
+  DEV_META: "http://service-apollo-configservice-prod.apollo:8080"
 
 ---
 kind: Service
@@ -91,7 +91,7 @@ spec:
 
       initContainers:
       # 确保 admin-service 正常提供服务
-      - image: alpine-bash:3.8
+      - image: centos:7
         name: check-service-apollo-admin-server-prod
         command: ['bash', '-c', "curl --connect-timeout 2 --max-time 5 --retry 60 --retry-delay 1 --retry-max-time 120 service-apollo-admin-server-prod.apollo:8090"]
 
