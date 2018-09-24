@@ -117,7 +117,7 @@ spec:
                 - key: app
                   operator: In
                   values:
-                  - registry
+                  - pod-apollo-configservice-prod
               topologyKey: kubernetes.io/hostname
 
       dnsPolicy: ClusterFirst
